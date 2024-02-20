@@ -11,8 +11,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textView2: TextView
     private lateinit var textView: TextView
     private lateinit var textView3: TextView
-    private var likes =999
-    private var share =999999
+    private var likes =0
+    private var share =990
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
