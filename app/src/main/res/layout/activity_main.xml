@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -29,26 +31,26 @@
             android:layout_marginTop="13dp"
             android:backgroundTint="#00FFFFFF"
             android:scaleType="centerCrop"
-            android:translationX="300dp"
+            android:translationX="260dp"
             app:srcCompat="@drawable/e" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zero"
             android:layout_marginTop="13dp"
+            android:text="@string/zero"
             android:textSize="15sp"
-            android:translationX="45dp"/>
+            android:translationX="45dp" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="114dp"
-            android:textSize="15sp"
             android:layout_marginTop="13dp"
-            android:text="@string/dev" />
+            android:text="@string/dev"
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -74,10 +76,10 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:translationX="330dp"
             android:layout_marginTop="16dp"
-            android:text="@string/views"/>
+            android:text="@string/views"
+            android:textSize="15sp"
+            android:translationX="290dp" />
     </FrameLayout>
 
     <FrameLayout
@@ -89,12 +91,12 @@
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="7dp"
             android:layout_marginEnd="7dp"
-            android:textSize="15dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:text="@string/textt" />
+            android:text="@string/textt"
+            android:textSize="15dp" />
     </FrameLayout>
 
     <FrameLayout
@@ -112,25 +114,25 @@
             android:layout_height="60dp"
             android:translationX="10dp"
             android:translationY="5dp"
-            app:srcCompat="@drawable/btpit"/>
+            app:srcCompat="@drawable/btpit" />
 
         <TextView
             android:id="@+id/textView3"
-            android:textSize="15sp"
-            android:translationX="80dp"
-            android:translationY="17dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btpitorg" />
+            android:text="@string/btpitorg"
+            android:textSize="15sp"
+            android:translationX="80dp"
+            android:translationY="17dp" />
 
         <TextView
             android:id="@+id/textView4"
-            android:textSize="10sp"
-            android:translationY="40dp"
-            android:translationX="80dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/timeanddate" />
+            android:text="@string/timeanddate"
+            android:textSize="10sp"
+            android:translationX="80dp"
+            android:translationY="40dp" />
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
