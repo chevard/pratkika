@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@id/frame3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/frame2">
+
+        <ImageView
+            android:id="@+id/viewsImage"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="13dp"
+            android:backgroundTint="#00FFFFFF"
+            android:scaleType="centerCrop"
+            android:translationX="260dp"
+            app:srcCompat="@drawable/e" />
+
+        <TextView
+            android:id="@+id/textLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:text="@string/zero"
+            android:textSize="15sp"
+            android:translationX="45dp" />
+
+        <TextView
+            android:id="@+id/textShares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="114dp"
+            android:layout_marginTop="13dp"
+            android:text="@string/dev"
+            android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/likeBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#00FFFFFF"
+            android:scaleType="centerCrop"
+            android:src="@drawable/heartblack" />
+
+        <ImageButton
+            android:id="@+id/shareBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="10dp"
+            android:background="#00FFFFFF"
+            android:scaleType="centerCrop"
+            android:src="@drawable/shareee" />
+
+        <TextView
+            android:id="@+id/textViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/views"
+            android:textSize="15sp"
+            android:translationX="290dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frame2"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintTop_toBottomOf="@id/framel1">
+
+        <TextView
+            android:id="@+id/textOfPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:text="@string/textt"
+            android:textSize="15dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/framel1"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <ImageButton
+            android:id="@+id/treedots"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:backgroundTint="#00FFFFFF"
+            android:scaleType="centerCrop"
+            android:src="@drawable/threedots"
+            android:translationX="340dp"
+            android:translationY="10dp" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:translationX="10dp"
+            android:translationY="5dp"
+            app:srcCompat="@drawable/btpit" />
+
+        <TextView
+            android:id="@+id/nameBTPIT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btpitorg"
+            android:textSize="15sp"
+            android:translationX="80dp"
+            android:translationY="17dp" />
+
+        <TextView
+            android:id="@+id/dateOfPublished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timeanddate"
+            android:textSize="10sp"
+            android:translationX="80dp"
+            android:translationY="40dp" />
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

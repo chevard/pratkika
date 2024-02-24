@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="save" type="id"/>
+    <item name="frame3" type="id" />
+</resources>
