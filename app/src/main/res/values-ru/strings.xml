@@ -12,4 +12,7 @@
     <string name="zero">0</string>
     <string name="zero1">0</string>
     <string name="dev">990</string>
+    <string name="textedit">Изменить</string>
+    <string name="textRemove">Удалить</string>
+    <string name="newPost">Введите текст</string>
 </resources>
