@@ -30,7 +30,8 @@
         app:backgroundTint="#9B98FD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/plus"
-        tools:translationX="175dp" />
+        tools:translationX="175dp"
+        tools:ignore="MissingConstraints" />
 <!--    <ImageButton-->
 <!--        android:id="@+id/save"-->
 <!--        android:layout_width="60dp"-->

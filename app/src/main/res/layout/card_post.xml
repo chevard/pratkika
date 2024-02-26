@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/treedots"
         style="@style/MenuStyle"
@@ -160,4 +161,33 @@
             android:translationX="80dp"
             android:translationY="40dp" />
 
+    <ImageView
+        android:id="@+id/videoImg"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        app:srcCompat="@drawable/btpitkartinka"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/barBottom"
+        app:layout_constraintTop_toBottomOf="@id/textOfPost"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+         />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:icon="@drawable/ic_play"
+        app:layout_constraintTop_toTopOf="@id/videoImg"
+        app:layout_constraintBottom_toBottomOf="@id/videoImg"
+        app:layout_constraintLeft_toLeftOf="@id/videoImg"
+        app:layout_constraintRight_toRightOf="@id/videoImg"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/videoContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:constraint_referenced_ids="videoImg, play" />
 </androidx.constraintlayout.widget.ConstraintLayout>

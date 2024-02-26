@@ -1,6 +1,7 @@
 package com.example.chevardova
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,13 +23,16 @@ import com.example.chevardova.databinding.ActivityMainBinding
 import com.example.chevardova.databinding.CardPostBinding
 
 class MainActivity : AppCompatActivity() {
-
+    override fun onResume() {
+        viewModel.deleteEdit()
+        super.onResume()
+    }
+    val viewModel: PostViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModel: PostViewModel by viewModels()
+
         val newPostLauncher = registerForActivityResult(Activity2.Contract) { result ->
             result ?: return@registerForActivityResult
             viewModel.changeContent(result)
@@ -54,9 +59,14 @@ class MainActivity : AppCompatActivity() {
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
             }
+            override fun onOpenVideo(post: Post) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+                startActivity(intent)
+            }
             override fun onDeleteEdit(post: Post){
                 viewModel.deleteEdit()
             }
+
         }
         )
 
@@ -113,6 +123,7 @@ class PostAdapter(
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
 }
 interface OnInteractionListener{
     fun onLike(post: Post) {}
@@ -120,6 +131,7 @@ interface OnInteractionListener{
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onDeleteEdit(post:Post){}
+    fun onOpenVideo(post: Post)
 }
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
@@ -152,6 +164,7 @@ class PostViewHolder(
             shareCheckBox?.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+            videoContent?.isVisible = !post.video.isNullOrBlank()
             treedots?.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.menu)
@@ -170,6 +183,9 @@ class PostViewHolder(
                     }
                 }.show()
             }
+            play?.setOnClickListener {
+                onInteractionListener.onOpenVideo(post)
+            }
         }
     }
 }
@@ -182,6 +198,7 @@ data class Post(
     var liketxt:Int,
     var sharetxt:Int,
     val shareByMe: Boolean,
+    val video:String?
 )
 fun updateNumber(count: Int): String {
     return when {
@@ -205,7 +222,8 @@ private val empty = Post(
     published = "только что",
     liketxt = 0,
     sharetxt = 0,
-    shareByMe = false
+    shareByMe = false,
+    video = ""
 )
 class PostViewModel : ViewModel() {
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
@@ -248,7 +266,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likedByMe = false,
             liketxt = 0,
             sharetxt = 990,
-            shareByMe = false
+            shareByMe = false,
+            video = "https://www.youtube.com/watch?v=as-FnmcmEFU"
         ),
         Post(
             id = ++nextid,
@@ -258,7 +277,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likedByMe = false,
             liketxt = 0,
             sharetxt = 990,
-            shareByMe = false
+            shareByMe = false,
+            video = "https://www.youtube.com/watch?v=htelI-MhgWQ"
         ),
     )
     private val data = MutableLiveData(posts)

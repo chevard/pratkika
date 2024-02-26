@@ -24,5 +24,6 @@
         app:backgroundTint="#9B98FD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/plus"
-        android:translationX="160dp"/>
+        android:translationX="160dp"
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

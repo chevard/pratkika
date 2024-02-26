@@ -15,4 +15,5 @@
     <string name="textedit">Edit</string>
     <string name="textRemove">Delete</string>
     <string name="newPost">Input text</string>
+    <string name="empty_post_error">Error</string>
 </resources>
