@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/content"
+        app:layout_constraintBottom_toTopOf="@id/plus"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
@@ -22,72 +22,81 @@
         tools:ignore="MissingConstraints" >
 
     </androidx.recyclerview.widget.RecyclerView>
-
-    <ImageButton
-        android:id="@+id/save"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="centerCrop"
-        android:src="@drawable/galochka"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="ca" />
-
-    <EditText
-        android:id="@+id/content"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:ems="10"
-        android:hint="@string/newPost"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="10dp"
+        app:backgroundTint="#9B98FD"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save"/>
+        app:srcCompat="@drawable/plus"
+        tools:translationX="175dp" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/save"-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:backgroundTint="#00FFFFFF"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:src="@drawable/galochka"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
-    <ImageView
-        android:id="@+id/editImage"
-        android:layout_width="30dp"
-        android:translationY="617dp"
-        android:translationX="10dp"
-        android:layout_height="30dp"
-        android:src="@drawable/pencil" />
-    <ImageView
-        android:id="@+id/ca"
-        android:layout_width="20dp"
-        android:translationY="618dp"
-        android:translationX="370dp"
-        android:layout_height="20dp"
-        android:src="@drawable/canc" />
+<!--    <androidx.constraintlayout.widget.Barrier-->
+<!--        android:id="@+id/barrier"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:barrierDirection="bottom"-->
+<!--        app:constraint_referenced_ids="ca" />-->
 
-    <TextView
-        android:id="@+id/textCancel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:translationY="620dp"
-        android:translationX="65dp"
-        tools:text="Изменить"
-        android:textSize="20dp"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/cancelGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="ca, editImage, textCancel, barrier"/>
+<!--    <EditText-->
+<!--        android:id="@+id/content"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="@string/newPost"-->
+<!--        android:importantForAutofill="no"-->
+<!--        android:inputType="textMultiLine"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/save"/>-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/editImage"-->
+<!--        android:layout_width="30dp"-->
+<!--        android:translationY="617dp"-->
+<!--        android:translationX="10dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:src="@drawable/pencil" />-->
+<!--    <ImageView-->
+<!--        android:id="@+id/ca"-->
+<!--        android:layout_width="20dp"-->
+<!--        android:translationY="618dp"-->
+<!--        android:translationX="370dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:src="@drawable/canc" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/textCancel"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:ellipsize="end"-->
+<!--        android:singleLine="true"-->
+<!--        android:translationY="620dp"-->
+<!--        android:translationX="65dp"-->
+<!--        tools:text="Изменить"-->
+<!--        android:textSize="20dp"/>-->
+
+<!--    <androidx.constraintlayout.widget.Group-->
+<!--        android:id="@+id/cancelGroup"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="visible"-->
+<!--        app:constraint_referenced_ids="ca, editImage, textCancel, barrier"/>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

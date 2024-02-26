@@ -1,5 +1,6 @@
 package com.example.chevardova
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -26,12 +28,25 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val viewModel: PostViewModel by viewModels()
+        val newPostLauncher = registerForActivityResult(Activity2.Contract) { result ->
+            result ?: return@registerForActivityResult
+            viewModel.changeContent(result)
+            viewModel.save()
+        }
         val adapter = PostAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
+                newPostLauncher.launch(post.content)
             }
             override fun onShare(post: Post) {
                 viewModel.shareById(post.id)
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    type = "text/plain"
+                }
+                val startIntent = Intent.createChooser(intent, getString(R.string.app_name))
+                startActivity(startIntent)
             }
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
@@ -45,42 +60,46 @@ class MainActivity : AppCompatActivity() {
         }
         )
 
-        viewModel.edited.observe(this) { post ->
-            if (post.id == 0L) {
-                binding.cancelGroup?.visibility = View.GONE
-                return@observe
-            }
-           binding.cancelGroup?.visibility = View.VISIBLE
-            binding.content?.requestFocus()
-            binding.content?.setText(post.content)
-        }
-        binding.ca?.setOnClickListener{
-            binding.cancelGroup?.visibility = View.GONE
-            viewModel.deleteEdit()
-            binding.content?.clearFocus()
-            binding.content?.setText("")
-        }
-        binding.save?.setOnClickListener {
-            with(binding.content) {
-                if (this?.text.isNullOrBlank()) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Содержание не может быть пустым",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-                viewModel.changeContent(this?.text.toString())
-                viewModel.save()
-                this?.setText("")
-                this?.clearFocus()
-                this?.let { it1 -> AndroidUtils.hideKeyboard(it1) }
-            }
-        }
+//        viewModel.edited.observe(this) { post ->
+//            if (post.id == 0L) {
+//                binding.cancelGroup?.visibility = View.GONE
+//                return@observe
+//            }
+//           binding.cancelGroup?.visibility = View.VISIBLE
+//            binding.content?.requestFocus()
+//            binding.content?.setText(post.content)
+//        }
+//        binding.ca?.setOnClickListener{
+//            binding.cancelGroup?.visibility = View.GONE
+//            viewModel.deleteEdit()
+//            binding.content?.clearFocus()
+//            binding.content?.setText("")
+//        }
+//        binding.save?.setOnClickListener {
+//            with(binding.content) {
+//                if (this?.text.isNullOrBlank()) {
+//                    Toast.makeText(
+//                        this@MainActivity,
+//                        "Содержание не может быть пустым",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    return@setOnClickListener
+//                }
+//                viewModel.changeContent(this?.text.toString())
+//                viewModel.save()
+//                this?.setText("")
+//                this?.clearFocus()
+//                this?.let { it1 -> AndroidUtils.hideKeyboard(it1) }
+//            }
+//        }
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
         binding.list?.adapter = adapter
+
+        binding.plus?.setOnClickListener{
+            newPostLauncher.launch("")
+        }
     }
 }
 class PostAdapter(
@@ -217,12 +236,12 @@ class PostViewModel : ViewModel() {
     fun shareById(id: Long) = repository.shareById(id)
     fun removeById(id: Long) = repository.removeById(id)
 }
-@Suppress("UNREACHABLE_CODE")
-private var nextid = 3L
+
+private var nextid = 0L
 class PostRepositoryInMemoryImpl : PostRepository {
     private var posts = listOf(
         Post(
-            id = 1,
+            id = ++nextid,
             author = "ГБПОУ ВО 'БТПИТ'",
             content = "Студенты ГБПОУ ВО 'БТПИТ' по профессии Сварщик ручной и частично механизированной сварки ( наплавки),под руководством педагогов Завидовской Н.И., Новокрещенова Д.В., приняли участие в региональной научно-практической студенческой конференции «Будущее сварки уже наступило», организованной ГБПОУ ВО «ВТПСТ», которая проходила с 22 января по 8 февраля 2024 года .Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира. В работах студентов описаны процессы, которые сейчас внедряются в современную сварочную отрасль: автоматизация, роботизация, цифровизация, онлайн-управление.",
             published = "20 февраля в 12:49",
@@ -232,7 +251,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             shareByMe = false
         ),
         Post(
-            id = 2,
+            id = ++nextid,
             author = "ГБПОУ ВО 'БТПИТ'",
             content = "26 января 2024 года в мастерских Борисоглебского техникума промышленных и информационных технологий прошел семинар для педагогов, направленный на профилактику экстремисткой деятельности.Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира.",
             published = "26 января в 18:49",
@@ -240,7 +259,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             liketxt = 0,
             sharetxt = 990,
             shareByMe = false
-        )
+        ),
     )
     private val data = MutableLiveData(posts)
     override fun getAll(): LiveData<List<Post>> = data
@@ -288,9 +307,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
 
     override fun save(post: Post) {
         val existingPosts = data.value.orEmpty().toMutableList()
-
         if (post.id == 0L) {
-            val newPost = post.copy(id = nextid)
+            val newPost = post.copy(id = ++nextid)
             existingPosts.add(0, newPost)
         } else {
             val index = existingPosts.indexOfFirst { it.id == post.id }
