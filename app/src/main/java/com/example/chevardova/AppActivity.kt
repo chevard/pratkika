@@ -1,16 +1,18 @@
 package com.example.chevardova
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.example.chevardova.databinding.Activity3Binding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import com.example.chevardova.NewPostFragment.Companion.textArg
+import com.example.chevardova.databinding.ActivityAppBinding
 import com.google.android.material.snackbar.Snackbar
 
-class Activity3 : AppCompatActivity() {
+class AppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = Activity3Binding.inflate(layoutInflater)
+        val binding = ActivityAppBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
         intent?.let {
@@ -26,8 +28,19 @@ class Activity3 : AppCompatActivity() {
                     }
                     .show()
             } else {
-                Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                findNavController(R.id.nav_host_fragment)
+                    .navigate(R.id.action_feedFragment_to_newPostFragment,
+                        Bundle().apply {
+                            textArg = text
+                        }
+                    )
+            }
+
+            it.apply {
+                action = Intent.ACTION_DEFAULT
+                putExtra(Intent.EXTRA_TEXT, "")
             }
         }
     }
+
 }
