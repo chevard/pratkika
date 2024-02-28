@@ -1,8 +1,10 @@
 package com.example.chevardova
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,6 +24,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chevardova.databinding.ActivityMainBinding
 import com.example.chevardova.databinding.CardPostBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
     override fun onResume() {
@@ -32,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val newPostLauncher = registerForActivityResult(Activity2.Contract) { result ->
             result ?: return@registerForActivityResult
             viewModel.changeContent(result)
@@ -123,7 +131,6 @@ class PostAdapter(
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }
 interface OnInteractionListener{
     fun onLike(post: Post) {}
@@ -137,7 +144,6 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
-
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem == newItem
     }
@@ -159,7 +165,6 @@ class PostViewHolder(
             textLikes.text = updateNumber(post.liketxt)
             likeCheckBox?.setOnClickListener {
                 onInteractionListener.onLike(post)
-
             }
             shareCheckBox?.setOnClickListener {
                 onInteractionListener.onShare(post)
@@ -209,6 +214,7 @@ fun updateNumber(count: Int): String {
 }
 interface PostRepository {
     fun getAll(): LiveData<List<Post>>
+    fun getData(): LiveData<List<Post>>
     fun likeById(id: Long)
     fun shareById(id: Long)
     fun save(post:Post)
@@ -225,9 +231,10 @@ private val empty = Post(
     shareByMe = false,
     video = ""
 )
-class PostViewModel : ViewModel() {
-    private val repository: PostRepository = PostRepositoryInMemoryImpl()
-    val data = repository.getAll()
+class PostViewModel(application: Application): AndroidViewModel(application) {
+    private val repository: PostRepository = PostRepositoryInMemoryImpl(application)
+   val data: LiveData<List<Post>> = repository.getData()
+   // val data: LiveData<List<Post>> = repository.getAll()
     val edited = MutableLiveData(empty)
     fun save(){
         edited.value?.let{
@@ -251,38 +258,103 @@ class PostViewModel : ViewModel() {
         edited.value = empty
     }
     fun likeById(id: Long) = repository.likeById(id)
+
     fun shareById(id: Long) = repository.shareById(id)
     fun removeById(id: Long) = repository.removeById(id)
 }
 
-private var nextid = 0L
-class PostRepositoryInMemoryImpl : PostRepository {
-    private var posts = listOf(
-        Post(
-            id = ++nextid,
-            author = "ГБПОУ ВО 'БТПИТ'",
-            content = "Студенты ГБПОУ ВО 'БТПИТ' по профессии Сварщик ручной и частично механизированной сварки ( наплавки),под руководством педагогов Завидовской Н.И., Новокрещенова Д.В., приняли участие в региональной научно-практической студенческой конференции «Будущее сварки уже наступило», организованной ГБПОУ ВО «ВТПСТ», которая проходила с 22 января по 8 февраля 2024 года .Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира. В работах студентов описаны процессы, которые сейчас внедряются в современную сварочную отрасль: автоматизация, роботизация, цифровизация, онлайн-управление.",
-            published = "20 февраля в 12:49",
-            likedByMe = false,
-            liketxt = 0,
-            sharetxt = 990,
-            shareByMe = false,
-            video = "https://www.youtube.com/watch?v=as-FnmcmEFU"
-        ),
-        Post(
-            id = ++nextid,
-            author = "ГБПОУ ВО 'БТПИТ'",
-            content = "26 января 2024 года в мастерских Борисоглебского техникума промышленных и информационных технологий прошел семинар для педагогов, направленный на профилактику экстремисткой деятельности.Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира.",
-            published = "26 января в 18:49",
-            likedByMe = false,
-            liketxt = 0,
-            sharetxt = 990,
-            shareByMe = false,
-            video = "https://www.youtube.com/watch?v=htelI-MhgWQ"
-        ),
-    )
-    private val data = MutableLiveData(posts)
-    override fun getAll(): LiveData<List<Post>> = data
+class PostRepositoryInMemoryImpl(private val context: Context
+) : PostRepository {
+
+//        init {
+//            val file = context.filesDir.resolve(filename)
+//            if(file.exists()){
+//                context.openFileInput(filename).bufferedReader().use{
+//                    posts = gson.fromJson(it,type)
+//                    data.value = posts
+//                }
+//            }
+//            else {
+//                posts = emptyList()
+//                sync()
+//            }
+//        }
+
+//    private var posts = listOf(
+//        Post(
+//            id = ++nextid,
+//            author = "ГБПОУ ВО 'БТПИТ'",
+//            content = "Студенты ГБПОУ ВО 'БТПИТ' по профессии Сварщик ручной и частично механизированной сварки ( наплавки),под руководством педагогов Завидовской Н.И., Новокрещенова Д.В., приняли участие в региональной научно-практической студенческой конференции «Будущее сварки уже наступило», организованной ГБПОУ ВО «ВТПСТ», которая проходила с 22 января по 8 февраля 2024 года .Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира. В работах студентов описаны процессы, которые сейчас внедряются в современную сварочную отрасль: автоматизация, роботизация, цифровизация, онлайн-управление.",
+//            published = "20 февраля в 12:49",
+//            likedByMe = false,
+//            liketxt = 0,
+//            sharetxt = 990,
+//            shareByMe = false,
+//            video = "https://www.youtube.com/watch?v=as-FnmcmEFU"
+//        ),
+//        Post(
+//            id = ++nextid,
+//            author = "ГБПОУ ВО 'БТПИТ'",
+//            content = "26 января 2024 года в мастерских Борисоглебского техникума промышленных и информационных технологий прошел семинар для педагогов, направленный на профилактику экстремисткой деятельности.Наши студенты-участники конференции поделились своим видением современных тенденций и проблем рынка сварочных технологий, обменялись опытом организации эффективного сварочного производства в условиях быстроизменяющегося мира.",
+//            published = "26 января в 18:49",
+//            likedByMe = false,
+//            liketxt = 0,
+//            sharetxt = 990,
+//            shareByMe = false,
+//            video = "https://www.youtube.com/watch?v=htelI-MhgWQ"
+//        ),
+//    )
+override fun getAll(): LiveData<List<Post>> {
+    try {
+        val jsonString = loadJsonFromAsset("postsOfBTPIT.json")
+        val jsonObject = JSONObject(jsonString)
+            val postData = jsonObject.getJSONArray("data")
+            val type = object : TypeToken<List<Post>>() {}.type
+            val posts: List<Post> = Gson().fromJson(postData.toString(), type)
+            return MutableLiveData(posts)
+
+    } catch (e: JSONException) {
+        Log.e("PostRepository", "Error parsing JSON", e)
+    }
+    return MutableLiveData(emptyList())
+}
+
+override fun getData(): LiveData<List<Post>> = data
+    private fun sync() {
+        context.openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
+            it.write(gson.toJson(data.value))
+        }
+    }
+    private fun loadJsonFromAsset(fileName: String): String {
+        return try {
+            context.assets.open(fileName).bufferedReader().use { it.readText() }
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+            ""
+        }
+    }
+    companion object {
+        private const val filename = "postsOfBTPIT.json"
+    }
+    private val gson = Gson()
+    private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
+    private var post: List<Post> = readPosts()
+        set(value) {
+            field = value
+            sync()
+        }
+    private fun readPosts(): List<Post> {
+        val file = context.filesDir.resolve(filename)
+
+        return if (file.exists()) {
+            context.openFileInput(filename).bufferedReader().use {
+                gson.fromJson(it, type)
+            }
+        } else {
+            emptyList()
+        }
+    }
+    private val data = MutableLiveData(post)
     override fun likeById(id: Long) {
         val existingPosts = data.value.orEmpty().toMutableList()
         val index = existingPosts.indexOfFirst { it.id == id }
@@ -295,7 +367,6 @@ class PostRepositoryInMemoryImpl : PostRepository {
             save(existingPosts[index])
         }
     }
-
     override fun shareById(id: Long) {
         val existingPosts = data.value.orEmpty().toMutableList()
         val index = existingPosts.indexOfFirst { it.id == id }
@@ -308,8 +379,6 @@ class PostRepositoryInMemoryImpl : PostRepository {
             save(existingPosts[index])
         }
     }
-
-
     override fun removeById(id: Long) {
         val existingPosts = data.value.orEmpty().toMutableList()
         val postToRemove = existingPosts.firstOrNull { it.id == id }
@@ -328,7 +397,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun save(post: Post) {
         val existingPosts = data.value.orEmpty().toMutableList()
         if (post.id == 0L) {
-            val newPost = post.copy(id = ++nextid)
+            val newPost = post.copy(id = existingPosts.firstOrNull()?.id ?: 0L+1)
             existingPosts.add(0, newPost)
         } else {
             val index = existingPosts.indexOfFirst { it.id == post.id }
@@ -336,14 +405,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                 existingPosts[index] = post
             }
         }
-
         data.value = existingPosts
-    }
-}
-object AndroidUtils{
-    fun hideKeyboard(view: View) {
-        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 

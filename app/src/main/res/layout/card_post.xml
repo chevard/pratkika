@@ -181,8 +181,7 @@
         app:layout_constraintTop_toTopOf="@id/videoImg"
         app:layout_constraintBottom_toBottomOf="@id/videoImg"
         app:layout_constraintLeft_toLeftOf="@id/videoImg"
-        app:layout_constraintRight_toRightOf="@id/videoImg"
-        />
+        app:layout_constraintRight_toRightOf="@id/videoImg" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/videoContent"
